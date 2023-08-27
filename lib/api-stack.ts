@@ -8,14 +8,18 @@ interface Props extends StackProps {
 }
 
 export class ApiStack extends Stack {
+    public restApi: RestApi
+
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id, props);
 
-        const api = new RestApi(this, 'API', { defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS, allowMethods: Cors.ALL_METHODS } })
+        const restApi = new RestApi(this, 'RestApi', { defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS, allowMethods: Cors.ALL_METHODS } })
 
         const functionIntegration = new LambdaIntegration(props.lambda)
 
-        api.root.addMethod('ANY', functionIntegration);
-        api.root.addProxy({ defaultIntegration: functionIntegration, anyMethod: true, })
+        restApi.root.addMethod('ANY', functionIntegration);
+        restApi.root.addProxy({ defaultIntegration: functionIntegration, anyMethod: true })
+
+        this.restApi = restApi
     }
 }
