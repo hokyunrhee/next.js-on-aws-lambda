@@ -17,7 +17,7 @@ export class NextjsLambdaStack extends Stack {
             runtime: Runtime.NODEJS_16_X,
             memorySize: 512,
             handler: 'run.sh',
-            code: Code.fromAsset(path.join(__dirname, '../nextjs-app/.next/standalone')),
+            code: Code.fromAsset(path.join(__dirname, '../../nextjs-app/.next/standalone')),
             architecture: Architecture.X86_64,
             layers: [lambdaAdapterLayer],
             environment: {

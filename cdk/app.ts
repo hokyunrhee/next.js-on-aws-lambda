@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { NextjsLambdaStack } from '../lib/nextjs-lambda-stack';
-import { ApiStack } from '../lib/api-stack';
-import { NextjsBucketStack } from '../lib/nextjs-bucket-stack';
-import { BucketDeploymentStack } from '../lib/bucket-deployment-stack';
-import { CloudfrontStack } from '../lib/cloudfront-stack';
+import { NextjsLambdaStack } from './stacks/nextjs-lambda-stack';
+import { ApiStack } from './stacks/api-stack';
+import { NextjsBucketStack } from './stacks/nextjs-bucket-stack';
+import { BucketDeploymentStack } from './stacks/bucket-deployment-stack';
+import { CloudfrontStack } from './stacks/cloudfront-stack';
 
 
 const app = new cdk.App();
