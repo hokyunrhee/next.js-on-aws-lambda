@@ -3,17 +3,19 @@ import { Cors, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway"
 import { Function as LambdaFunction } from "aws-cdk-lib/aws-lambda"
 import { Construct } from "constructs"
 
+import { prefix } from "../constants"
+
 interface Props extends StackProps {
   lambda: LambdaFunction
 }
 
-export class ApiStack extends Stack {
+export class RestApiStack extends Stack {
   public restApi: RestApi
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props)
 
-    const restApi = new RestApi(this, "RestApi", {
+    const restApi = new RestApi(this, `${prefix}-rest-api-stack`, {
       defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS, allowMethods: Cors.ALL_METHODS },
     })
 

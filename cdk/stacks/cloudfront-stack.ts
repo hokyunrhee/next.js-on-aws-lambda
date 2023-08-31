@@ -5,6 +5,8 @@ import { RestApiOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins"
 import { Bucket } from "aws-cdk-lib/aws-s3"
 import { Construct } from "constructs"
 
+import { prefix } from "../constants"
+
 interface Props extends StackProps {
   restApi: RestApi
   bucket: Bucket
@@ -14,7 +16,7 @@ export class CloudfrontStack extends Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props)
 
-    new Distribution(this, "Distribution", {
+    new Distribution(this, `${prefix}-distribution`, {
       defaultBehavior: {
         origin: new RestApiOrigin(props.restApi),
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

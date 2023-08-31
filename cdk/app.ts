@@ -1,18 +1,16 @@
-#!/usr/bin/env node
 import * as cdk from "aws-cdk-lib"
-import "source-map-support/register"
 
-import { ApiStack } from "./stacks/api-stack"
+import { prefix } from "./constants"
 import { BucketDeploymentStack } from "./stacks/bucket-deployment-stack"
+import { BucketStack } from "./stacks/bucket-stack"
 import { CloudfrontStack } from "./stacks/cloudfront-stack"
-import { NextjsBucketStack } from "./stacks/nextjs-bucket-stack"
-import { NextjsLambdaStack } from "./stacks/nextjs-lambda-stack"
+import { LambdaStack } from "./stacks/lambda-stack"
+import { RestApiStack } from "./stacks/rest-api-stack"
 
 const app = new cdk.App()
 
-const nextjsLambdaStack = new NextjsLambdaStack(app, "NextjsLambdaStack")
-const apiStack = new ApiStack(app, "ApiStack", { lambda: nextjsLambdaStack.lambda })
-const nextjsBucketStack = new NextjsBucketStack(app, "NextjsBucketStack")
-
-new CloudfrontStack(app, "CloudfrontStack", { restApi: apiStack.restApi, bucket: nextjsBucketStack.bucket })
-new BucketDeploymentStack(app, "BucketDeploymentStack", { destinationBucket: nextjsBucketStack.bucket })
+const lambdaStack = new LambdaStack(app, `${prefix}-lambda-stack`)
+const restApiStack = new RestApiStack(app, `${prefix}-rest-api-stack`, { lambda: lambdaStack.lambda })
+const bucketStack = new BucketStack(app, `${prefix}-bucket-stack`)
+new CloudfrontStack(app, `${prefix}-cloudfront-stack`, { restApi: restApiStack.restApi, bucket: bucketStack.bucket })
+new BucketDeploymentStack(app, `${prefix}-bucket-deployment-stack`, { destinationBucket: bucketStack.bucket })

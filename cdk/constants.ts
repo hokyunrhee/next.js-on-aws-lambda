@@ -1,4 +1,9 @@
-import { name } from "../package.json"
-import { env } from "@/env.mjs"
+import { z } from "zod"
 
-export const prefix = `${name}-${env.DEVELOPMENT_ENV}`
+import { name } from "../package.json"
+
+export const prefix = `${name}-${z
+  .enum(["dev", "prod"])
+  .optional()
+  .transform((value) => value ?? "dev")
+  .parse(process.env.DEVELOPMENT_ENV)}`
