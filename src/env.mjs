@@ -1,6 +1,17 @@
 import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
+import { getSecret } from "@/utils/lambda-utils"
+
+if (process.env.DEVELOPMENT_ENV === "prod") {
+  /** @type {{ NEXTAUTH_SECRET: string, NEXTAUTH_URL: string, GITHUB_ID: string, GITHUB_SECRET: string }} */
+  const secret = await getSecret()
+  process.env.NEXTAUTH_SECRET = secret.NEXTAUTH_SECRET
+  process.env.NEXTAUTH_URL = secret.NEXTAUTH_URL
+  process.env.GITHUB_ID = secret.GITHUB_ID
+  process.env.GITHUB_SECRET = secret.GITHUB_SECRET
+}
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app

@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { name } from "../package.json"
+import { name } from "./package.json"
 
 export const prefix = `${name}-${z
   .enum(["dev", "prod"])

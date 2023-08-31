@@ -3,7 +3,7 @@ import { Cors, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway"
 import { Function as LambdaFunction } from "aws-cdk-lib/aws-lambda"
 import { Construct } from "constructs"
 
-import { prefix } from "../constants"
+import { prefix } from "../../constants"
 
 interface Props extends StackProps {
   lambda: LambdaFunction

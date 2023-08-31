@@ -2,7 +2,7 @@ import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib"
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3"
 import { Construct } from "constructs"
 
-import { prefix } from "../constants"
+import { prefix } from "../../constants"
 
 export class BucketStack extends Stack {
   public bucket: Bucket

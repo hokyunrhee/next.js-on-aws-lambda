@@ -3,7 +3,7 @@ import { Bucket } from "aws-cdk-lib/aws-s3"
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment"
 import { Construct } from "constructs"
 
-import { prefix } from "../constants"
+import { prefix } from "../../constants"
 
 interface Props extends StackProps {
   destinationBucket: Bucket

@@ -5,7 +5,7 @@ import { RestApiOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins"
 import { Bucket } from "aws-cdk-lib/aws-s3"
 import { Construct } from "constructs"
 
-import { prefix } from "../constants"
+import { prefix } from "../../constants"
 
 interface Props extends StackProps {
   restApi: RestApi
