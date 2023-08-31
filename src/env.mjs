@@ -19,6 +19,10 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
+    DEVELOPMENT_ENV: z
+      .enum(["dev", "prod"])
+      .optional()
+      .transform((value) => value ?? "dev"),
 
     NEXTAUTH_SECRET: z.string(),
 
@@ -39,6 +43,7 @@ export const env = createEnv({
     PORT: process.env.PORT,
     CI: process.env.CI,
     ANALYZE: process.env.ANALYZE,
+    DEVELOPMENT_ENV: process.env.DEVELOPMENT_ENV,
 
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
 
