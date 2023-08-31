@@ -10,7 +10,9 @@ export class SecretsManagerStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    const secret = new Secret(this, `${prefix}-secret`)
+    const secret = new Secret(this, `${prefix}-secret`, {
+      secretObjectValue: {},
+    })
 
     this.secretArn = secret.secretArn
   }
