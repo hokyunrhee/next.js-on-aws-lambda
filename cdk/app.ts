@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib"
 
 import { prefix } from "../constants"
+import { AlarmStack } from "./stacks/alarm-stack"
 import { BucketDeploymentStack } from "./stacks/bucket-deployment-stack"
 import { BucketStack } from "./stacks/bucket-stack"
 import { CloudfrontStack } from "./stacks/cloudfront-stack"
@@ -16,3 +17,4 @@ const restApiStack = new RestApiStack(app, `${prefix}-rest-api-stack`, { lambda:
 const bucketStack = new BucketStack(app, `${prefix}-bucket-stack`)
 new CloudfrontStack(app, `${prefix}-cloudfront-stack`, { restApi: restApiStack.restApi, bucket: bucketStack.bucket })
 new BucketDeploymentStack(app, `${prefix}-bucket-deployment-stack`, { destinationBucket: bucketStack.bucket })
+new AlarmStack(app, `${prefix}-alarm-stack`, { restApiName: restApiStack.restApi.restApiName })
