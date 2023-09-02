@@ -11,7 +11,7 @@ import { SecretsManagerStack } from "./stacks/secrets-manager"
 const app = new cdk.App()
 
 const secretsmanagerStack = new SecretsManagerStack(app, `${prefix}-secrets-manager-stack`)
-const lambdaStack = new LambdaStack(app, `${prefix}-lambda-stack`, { secretArn: secretsmanagerStack.secretArn })
+const lambdaStack = new LambdaStack(app, `${prefix}-lambda-stack`, { secret: secretsmanagerStack.secret })
 const restApiStack = new RestApiStack(app, `${prefix}-rest-api-stack`, { lambda: lambdaStack.lambda })
 const bucketStack = new BucketStack(app, `${prefix}-bucket-stack`)
 new CloudfrontStack(app, `${prefix}-cloudfront-stack`, { restApi: restApiStack.restApi, bucket: bucketStack.bucket })

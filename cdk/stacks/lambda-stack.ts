@@ -1,11 +1,12 @@
 import { Stack, StackProps } from "aws-cdk-lib"
 import { LayerVersion, Function as LambdaFunction, Runtime, Code, Architecture } from "aws-cdk-lib/aws-lambda"
+import { Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Construct } from "constructs"
 
-import { prefix } from "../../constants"
+import { developmentEnv, prefix } from "../../constants"
 
 interface Props extends StackProps {
-  secretArn: string
+  secret: Secret
 }
 
 export class LambdaStack extends Stack {
@@ -20,27 +21,25 @@ export class LambdaStack extends Stack {
       `arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:17`
     )
 
-    const parametersAndSecretsLambdaExtension = LayerVersion.fromLayerVersionArn(
-      this,
-      `${prefix}-parameters-and-secrets-lambda-extension`,
-      `arn:aws:lambda:${this.region}:738900069198:layer:AWS-Parameters-and-Secrets-Lambda-Extension:4`
-    )
-
     const lambda = new LambdaFunction(this, `${prefix}-lambda`, {
       runtime: Runtime.NODEJS_16_X,
       memorySize: 1024,
       handler: "run.sh",
       code: Code.fromAsset(".next/standalone"),
       architecture: Architecture.X86_64,
-      layers: [lambdaWebAdapter, parametersAndSecretsLambdaExtension],
+      layers: [lambdaWebAdapter],
       environment: {
         PORT: "8080",
         AWS_LAMBDA_EXEC_WRAPPER: "/opt/bootstrap",
         RUST_LOG: "info",
-        SECRET_ARN: props.secretArn,
+        PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL: "info",
+        SECRET_ARN: props.secret.secretArn,
+        DEVELOPMENT_ENV: developmentEnv,
       },
       description: `Created at: ${new Date().toISOString()}`,
     })
+
+    props.secret.grantRead(lambda)
 
     this.lambda = lambda
   }
