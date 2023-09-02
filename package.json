@@ -13,6 +13,7 @@
     "cdk": "cdk"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.398.0",
     "@t3-oss/env-nextjs": "^0.6.1",
     "@tanstack/react-query": "^4.33.0",
     "@trpc/client": "^10.38.1",

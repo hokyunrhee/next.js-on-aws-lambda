@@ -1,17 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
-import { getSecret } from "@/utils/lambda-utils"
-
-if (process.env.DEVELOPMENT_ENV === "prod") {
-  /** @type {{ NEXTAUTH_SECRET: string, NEXTAUTH_URL: string, GITHUB_ID: string, GITHUB_SECRET: string }} */
-  const secret = await getSecret()
-  process.env.NEXTAUTH_SECRET = secret.NEXTAUTH_SECRET
-  process.env.NEXTAUTH_URL = secret.NEXTAUTH_URL
-  process.env.GITHUB_ID = secret.GITHUB_ID
-  process.env.GITHUB_SECRET = secret.GITHUB_SECRET
-}
-
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
@@ -31,10 +20,11 @@ export const env = createEnv({
       .optional()
       .transform((value) => value === "true"),
 
-    NEXTAUTH_SECRET: z.string(),
+    NEXTAUTH_SECRET: z.string().optional(),
+    NEXTAUTH_URL: z.string().url().optional(),
 
-    GITHUB_ID: z.string().min(1),
-    GITHUB_SECRET: z.string().min(1),
+    GITHUB_ID: z.string().min(1).optional(),
+    GITHUB_SECRET: z.string().min(1).optional(),
   },
   /**
    * Specify your client-side environment variables schema here. This way you can ensure the app
@@ -52,6 +42,7 @@ export const env = createEnv({
     ANALYZE: process.env.ANALYZE,
 
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 
     GITHUB_ID: process.env.GITHUB_ID,
     GITHUB_SECRET: process.env.GITHUB_SECRET,
