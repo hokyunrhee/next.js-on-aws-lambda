@@ -1,5 +1,6 @@
 import { Stack, StackProps } from "aws-cdk-lib"
 import { RestApi } from "aws-cdk-lib/aws-apigateway"
+import { Certificate } from "aws-cdk-lib/aws-certificatemanager"
 import {
   AllowedMethods,
   CachePolicy,
@@ -7,15 +8,22 @@ import {
   OriginRequestCookieBehavior,
   OriginRequestPolicy,
   OriginRequestQueryStringBehavior,
+  SecurityPolicyProtocol,
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront"
 import { RestApiOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins"
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53"
+import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets"
 import { Bucket } from "aws-cdk-lib/aws-s3"
 import { Construct } from "constructs"
 
-import { prefix } from "../../constants"
+import { prefix } from "../constants"
 
 interface Props extends StackProps {
+  domainName: string
+  subdomainName?: string
+  hostedZoneId: string
+  certificateArn: string
   restApi: RestApi
   bucket: Bucket
 }
@@ -24,12 +32,17 @@ export class CloudfrontStack extends Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props)
 
-    const originRequestPolicy = new OriginRequestPolicy(this, `${prefix}-origin-request-policy`, {
+    const certificate = Certificate.fromCertificateArn(this, `${prefix}CustomDomainCertificate`, props.certificateArn)
+
+    const originRequestPolicy = new OriginRequestPolicy(this, `${prefix}OriginRequestPolicy`, {
       cookieBehavior: OriginRequestCookieBehavior.all(),
       queryStringBehavior: OriginRequestQueryStringBehavior.all(),
     })
 
-    new Distribution(this, `${prefix}-distribution`, {
+    const distribution = new Distribution(this, `${prefix}Distribution`, {
+      certificate: certificate,
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+      domainNames: [!props.subdomainName ? props.domainName : `${props.subdomainName}.${props.domainName}`],
       defaultBehavior: {
         origin: new RestApiOrigin(props.restApi),
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -49,6 +62,17 @@ export class CloudfrontStack extends Stack {
           allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
         },
       },
+    })
+
+    const hostedZone = HostedZone.fromHostedZoneAttributes(this, `${prefix}Hostedzone`, {
+      zoneName: props.domainName,
+      hostedZoneId: props.hostedZoneId,
+    })
+
+    new ARecord(this, `${prefix}ARecord`, {
+      recordName: !props.subdomainName ? props.domainName : `${props.subdomainName}.${props.domainName}`,
+      zone: hostedZone,
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
     })
   }
 }

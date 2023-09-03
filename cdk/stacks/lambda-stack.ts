@@ -3,7 +3,7 @@ import { LayerVersion, Function as LambdaFunction, Runtime, Code, Architecture }
 import { Secret } from "aws-cdk-lib/aws-secretsmanager"
 import { Construct } from "constructs"
 
-import { developmentEnv, prefix } from "../../constants"
+import { prefix } from "../constants"
 
 interface Props extends StackProps {
   secret: Secret
@@ -17,11 +17,11 @@ export class LambdaStack extends Stack {
 
     const lambdaWebAdapter = LayerVersion.fromLayerVersionArn(
       this,
-      `${prefix}-lambda-web-adapter`,
+      `${prefix}LambdaWebAdapter`,
       `arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:17`
     )
 
-    const lambda = new LambdaFunction(this, `${prefix}-lambda`, {
+    const lambda = new LambdaFunction(this, `${prefix}Lambda`, {
       runtime: Runtime.NODEJS_16_X,
       memorySize: 1024,
       handler: "run.sh",
@@ -34,7 +34,7 @@ export class LambdaStack extends Stack {
         RUST_LOG: "info",
         PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL: "info",
         SECRET_ARN: props.secret.secretArn,
-        DEVELOPMENT_ENV: developmentEnv,
+        DEVELOPMENT_ENV: process.env.DEVELOPMENT_ENV || "DEV",
       },
       description: `Created at: ${new Date().toISOString()}`,
     })
