@@ -6,6 +6,7 @@ import { BucketDeploymentStack } from "./stacks/bucket-deployment-stack"
 import { BucketStack } from "./stacks/bucket-stack"
 import { ChatbotStack } from "./stacks/chatbot-stack"
 import { CloudfrontStack } from "./stacks/cloudfront-stack"
+import { CronStack } from "./stacks/cron-stack"
 import { LambdaStack } from "./stacks/lambda-stack"
 import { RestApiStack } from "./stacks/rest-api-stack"
 import { SecretStack } from "./stacks/secret-stack"
@@ -19,6 +20,7 @@ const lambdaStack = new LambdaStack(app, `${prefix}LambdaStack`, { secret: secre
 const restApiStack = new RestApiStack(app, `${prefix}RestApiStack`, { lambda: lambdaStack.lambda })
 const bucketStack = new BucketStack(app, `${prefix}BucketStack`)
 new BucketDeploymentStack(app, `${prefix}BucketDeploymentStack`, { destinationBucket: bucketStack.bucket })
+new CronStack(app, `${prefix}CronStack`, { lambda: lambdaStack.lambda })
 
 // CDN
 new CloudfrontStack(app, `${prefix}CloudfrontStack`, {
