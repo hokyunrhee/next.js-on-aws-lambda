@@ -10,9 +10,9 @@ const name = NAME.split("-")
   .join("")
 
 const developmentEnv = z
-  .enum(["DEV", "PROD"])
+  .enum(["STAGING", "PRODUCTION"])
   .optional()
-  .transform((value) => value ?? "DEV")
+  .transform((value) => value ?? "STAGING")
   .transform((value) => value.charAt(0) + value.slice(1).toLowerCase())
   .parse(process.env.DEVELOPMENT_ENV)
 

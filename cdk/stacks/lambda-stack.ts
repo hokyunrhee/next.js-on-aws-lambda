@@ -34,7 +34,7 @@ export class LambdaStack extends Stack {
         RUST_LOG: "info",
         PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL: "info",
         SECRET_ARN: props.secret.secretArn,
-        DEVELOPMENT_ENV: process.env.DEVELOPMENT_ENV || "DEV",
+        DEVELOPMENT_ENV: process.env.DEVELOPMENT_ENV || "STAGING",
       },
       description: `Created at: ${new Date().toISOString()}`,
     })

@@ -1,0 +1,56 @@
+name: CD
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
+      - name: 🏗 Build application
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🚀 Deploy Staging
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        run: |
+          npm run cdk deploy -- --all -- --require-approval -- never
+        env:
+          DEVELOPMENT_ENV: "STAGING"
+          DOMAIN_NAME: ${{ secrets.STAGING_DOMAIN_NAME }}
+          SUBDOMAIN_NAME: ${{ secrets.STAGING_SUBDOMAIN_NAME }}
+          HOSTED_ZONE_ID: ${{ secrets.STAGING_HOSTED_ZONE_ID }}
+          CERTIFICATE_ARN: ${{ secrets.STAGING_CERTIFICATE_ARN }}
+          SLACK_WORK_SPACE_ID: ${{ secrets.STAGING_SLACK_WORK_SPACE_ID }}
+          SLACK_CHANNEL_ID: ${{ secrets.STAGING_SLACK_CHANNEL_ID }}
+
+      - name: 🚀 Deploy Production
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          npm run cdk deploy -- --all -- --require-approval -- never
+        env:
+          DEVELOPMENT_ENV: "PRODUCTION"
+          DOMAIN_NAME: ${{ secrets.PRODUCTION_DOMAIN_NAME }}
+          SUBDOMAIN_NAME: ${{ secrets.PRODUCTION_SUBDOMAIN_NAME }}
+          HOSTED_ZONE_ID: ${{ secrets.PRODUCTION_HOSTED_ZONE_ID }}
+          CERTIFICATE_ARN: ${{ secrets.PRODUCTION_CERTIFICATE_ARN }}
+          SLACK_WORK_SPACE_ID: ${{ secrets.PRODUCTION_SLACK_WORK_SPACE_ID }}
+          SLACK_CHANNEL_ID: ${{ secrets.PRODUCTION_SLACK_CHANNEL_ID }}
