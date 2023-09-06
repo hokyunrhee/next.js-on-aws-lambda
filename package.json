@@ -6,11 +6,13 @@
     "build": "next build",
     "postbuild": "echo \"#!/bin/bash\n\nnode server.js\" > .next/standalone/run.sh",
     "start": "next start",
-    "lint": "eslint --ignore-path .gitignore --fix .",
+    "lint": "eslint --ignore-path .gitignore .",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
     "test:watch": "jest --watch",
     "analyze": "cross-env ANALYZE=true npm run build",
-    "type-check": "tsc --noEmit",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy --all --require-approval never"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.398.0",
