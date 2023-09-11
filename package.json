@@ -12,7 +12,7 @@
     "test:watch": "jest --watch",
     "analyze": "cross-env ANALYZE=true npm run build",
     "cdk": "cdk",
-    "deploy": "cdk deploy --all --require-approval never"
+    "deploy": "cdk deploy --all --method=direct --require-approval never"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.398.0",

@@ -32,7 +32,7 @@ jobs:
       - name: 🚀 Deploy Staging
         if: ${{ github.ref == 'refs/heads/develop' }}
         run: |
-          npm run cdk deploy -- --all -- --require-approval -- never
+          npm run deploy
         env:
           DEVELOPMENT_ENV: "STAGING"
           DOMAIN_NAME: ${{ secrets.STAGING_DOMAIN_NAME }}
@@ -45,7 +45,7 @@ jobs:
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          npm run cdk deploy -- --all -- --require-approval -- never
+          npm run deploy
         env:
           DEVELOPMENT_ENV: "PRODUCTION"
           DOMAIN_NAME: ${{ secrets.PRODUCTION_DOMAIN_NAME }}
