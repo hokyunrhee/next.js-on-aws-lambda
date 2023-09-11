@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { name as NAME } from "../package.json"
 
+// Set environment variables in local environment
 config({ path: ".env.local" })
 
 const name = NAME.split("-")

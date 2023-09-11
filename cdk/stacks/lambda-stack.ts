@@ -22,7 +22,7 @@ export class LambdaStack extends Stack {
     )
 
     const lambda = new LambdaFunction(this, `${prefix}Lambda`, {
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       memorySize: 1024,
       handler: "run.sh",
       code: Code.fromAsset(".next/standalone"),
